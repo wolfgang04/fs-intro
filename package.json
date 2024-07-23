@@ -1,0 +1,10 @@
+{
+  "name": "fs-intro",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently \"npm start --prefix client\" \"npm start --prefix server\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
