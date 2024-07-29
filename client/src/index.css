@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.col {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+label {
+	font-size: 21px;
+}
+
+input {
+	padding: 5px;
+}
+
+input:focus {
+	outline: none;
+}
+
+input[type="submit"] {
+	cursor: pointer;
+	display: block;
+	width: 100%;
+	background-color: rgb(141, 138, 138);
+	padding: 5px;
+	border-radius: 8px;
+}
