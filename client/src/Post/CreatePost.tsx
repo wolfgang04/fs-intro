@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import ImageIcon from "@mui/icons-material/Image";
-
-interface blog {
-	title: string;
-	content: string;
-}
+import { blog } from "../App";
 
 interface Props {
 	onPost: (blog: blog) => void;
@@ -17,7 +13,12 @@ const CreatePost: React.FC<Props> = ({ onPost }) => {
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
-		onPost({ title, content });
+		if (title === "" || content === "") {
+			return false;
+		}
+
+		const Blog = { blogtitle: title, blogcontent: content };
+		onPost(Blog);
 		setTitle("");
 		setContent("");
 	};
