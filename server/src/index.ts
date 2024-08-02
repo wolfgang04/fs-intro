@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 const cors = require("cors");
 
 const app = express();
+app.use(express.json());
 app.use(cors());
 
 const supabaseUrl = "https://ifqtlgtoxolrskahoibu.supabase.co";
@@ -10,10 +11,14 @@ const supabaseKey =
 	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmcXRsZ3RveG9scnNrYWhvaWJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjIyMzc5MTgsImV4cCI6MjAzNzgxMzkxOH0.67ZLacXwKf7YSyQhb4t3ifAg2agpzpbox4QGzAUeb5s";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-app.get("/api/blog", async (req: Request, res: Response) => {
-	const { data, error } = await supabase
-		.from("blog")
-		.select("blogtitle, blogcontent");
+interface Blog {
+	blogid: number;
+	blogtitle: string;
+	blogcontent: string;
+}
+
+app.get("/api/blog/get", async (req: Request, res: Response) => {
+	const { data, error } = await supabase.from("blog").select();
 	if (error) {
 		console.error("Error fetching data:", error);
 		return res.status(500).send(error.message);
@@ -21,10 +26,37 @@ app.get("/api/blog", async (req: Request, res: Response) => {
 
 	console.log("Data fetched:", data);
 
-	res.send(data);
+	return res.send(data);
 });
 
-const port = 3030;
+app.post("/api/blog/post", async (req: Request, res: Response) => {
+	const blog: Blog = req.body;
+	console.log(blog);
+
+	try {
+		const { data, error } = await supabase.from("blog").insert([blog]);
+		if (error) {
+			throw error;
+		}
+		return res.sendStatus(201).send(data);
+	} catch (err) {
+		if (err instanceof Error) {
+			console.error("Error posting data:", err);
+			return res.status(500).send(err.message);
+		} else {
+			console.error("Unknown error occured:", err);
+			return res.status(500).send("An unknown error occured");
+		}
+	}
+});
+
+app.post("/api/blog/delete", async (req: Request, res: Response) => {
+	const blogID = req.body.id;
+
+	console.log(blogID);
+});
+
+const port = 6061;
 app.listen(port, () => {
 	console.log(`Server running on port ${port}`);
 });
