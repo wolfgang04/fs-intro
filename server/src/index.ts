@@ -17,6 +17,10 @@ interface Blog {
 	blogcontent: string;
 }
 
+process.on("SIGHUP", () => {
+	process.exit(1);
+});
+
 app.get("/api/blog/get", async (req: Request, res: Response) => {
 	const { data, error } = await supabase.from("blog").select();
 	if (error) {
@@ -56,7 +60,7 @@ app.post("/api/blog/delete", async (req: Request, res: Response) => {
 	console.log(blogID);
 });
 
-const port = 6061;
+const port = 6062;
 app.listen(port, () => {
 	console.log(`Server running on port ${port}`);
 });
