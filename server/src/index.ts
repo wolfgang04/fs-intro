@@ -57,7 +57,26 @@ app.post("/api/blog/post", async (req: Request, res: Response) => {
 app.post("/api/blog/delete", async (req: Request, res: Response) => {
 	const blogID = req.body.id;
 
-	console.log(blogID);
+	try {
+		const { error } = await supabase
+			.from("blog")
+			.delete()
+			.eq("blogid", blogID);
+
+		if (error) {
+			throw error;
+		}
+
+		return res.sendStatus(201);
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error deleting data:", error);
+			return res.sendStatus(500).send(error.message);
+		} else {
+			console.error("Unknown error occured:", error);
+			return res.sendStatus(500).send("An unknown error occured");
+		}
+	}
 });
 
 const port = 6062;

@@ -14,7 +14,7 @@ function App() {
 
 	useEffect(() => {
 		axios
-			.get("http://localhost:6061/api/blog/get")
+			.get("http://localhost:6062/api/blog/get")
 			.then((res) => {
 				console.log(res.data);
 				setBlogs(res.data);
@@ -25,14 +25,15 @@ function App() {
 	const handleDeleteItem = async (id: number) => {
 		try {
 			const response = await axios.post(
-				"http://localhost:6061/api/blog/delete",
+				"http://localhost:6062/api/blog/delete",
 				{ id }
 			);
-			setBlogs((prevBlogs: blog[]) => {
-				return prevBlogs.filter((blog: blog) => blog.blogid !== id);
-			});
-			// if (response.status >= 200 && response.status < 300) {
-			// }
+
+			if (response.status >= 200 && response.status < 300) {
+				setBlogs((prevBlogs: blog[]) => {
+					return prevBlogs.filter((blog: blog) => blog.blogid !== id);
+				});
+			}
 		} catch (error) {
 			console.error("Error deleting the data:", error);
 		}
@@ -41,11 +42,13 @@ function App() {
 	const handleCreatePost = async (newBlog: blog) => {
 		try {
 			const response = await axios.post(
-				"http://localhost:6061/api/blog/post",
+				"http://localhost:6062/api/blog/post",
 				newBlog
 			);
-			console.log(response.data);
-			setBlogs((prevBlogs) => [...prevBlogs, newBlog]);
+
+			if (response.status >= 200 && response.status < 300) {
+				setBlogs((prevBlogs) => [...prevBlogs, newBlog]);
+			}
 		} catch (err) {
 			console.error("Error posting the data:", err);
 		}
