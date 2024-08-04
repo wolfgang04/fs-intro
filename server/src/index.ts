@@ -22,15 +22,24 @@ process.on("SIGHUP", () => {
 });
 
 app.get("/api/blog/get", async (req: Request, res: Response) => {
-	const { data, error } = await supabase.from("blog").select();
-	if (error) {
-		console.error("Error fetching data:", error);
-		return res.status(500).send(error.message);
+	try {
+		const { data, error } = await supabase.from("blog").select();
+		if (error) {
+			throw error;
+		}
+
+		console.log("Data fetched:", data);
+
+		return res.send(data);
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error fetching data:", error);
+			return res.status(500).send(error.message);
+		} else {
+			console.error("Unknown error occured:", error);
+			return res.status(500).send("An unknown error occured:");
+		}
 	}
-
-	console.log("Data fetched:", data);
-
-	return res.send(data);
 });
 
 app.post("/api/blog/post", async (req: Request, res: Response) => {
@@ -42,7 +51,7 @@ app.post("/api/blog/post", async (req: Request, res: Response) => {
 		if (error) {
 			throw error;
 		}
-		return res.sendStatus(201).send(data);
+		return res.status(201).send(data);
 	} catch (err) {
 		if (err instanceof Error) {
 			console.error("Error posting data:", err);
@@ -67,14 +76,14 @@ app.post("/api/blog/delete", async (req: Request, res: Response) => {
 			throw error;
 		}
 
-		return res.sendStatus(201);
+		return res.status(201);
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error("Error deleting data:", error);
-			return res.sendStatus(500).send(error.message);
+			return res.status(500).send(error.message);
 		} else {
 			console.error("Unknown error occured:", error);
-			return res.sendStatus(500).send("An unknown error occured");
+			return res.status(500).send("An unknown error occured");
 		}
 	}
 });
