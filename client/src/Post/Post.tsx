@@ -39,7 +39,11 @@ const Post: React.FC<Props> = (props) => {
 			<h1 className="font-bold text-2xl mb-3">{blogtitle}</h1>
 			<div
 				className="cursor-pointer hover:bg-[#b8b8b8] rounded-full h-10 w-10 flex justify-center items-center absolute top-0 right-0"
-				onClick={() => toggled && props.onDelete(blogid)}
+				onClick={() =>
+					toggled === true
+						? props.onDelete(blogid)
+						: console.log(blogid)
+				}
 			>
 				{toggled === true ? <DeleteIcon /> : <EditIcon />}
 			</div>

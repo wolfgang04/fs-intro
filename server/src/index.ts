@@ -76,7 +76,7 @@ app.post("/api/blog/delete", async (req: Request, res: Response) => {
 			throw error;
 		}
 
-		return res.status(201);
+		return res.status(201).send("Successfully deleted");
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error("Error deleting data:", error);

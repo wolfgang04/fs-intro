@@ -13,13 +13,7 @@ function App() {
 	const [blogs, setBlogs] = useState<blog[]>([]);
 
 	useEffect(() => {
-		axios
-			.get("http://localhost:6062/api/blog/get")
-			.then((res) => {
-				console.log(res.data);
-				setBlogs(res.data);
-			})
-			.catch((err) => console.log(`error: ${err}`));
+		handleFetch();
 	}, []);
 
 	const handleDeleteItem = async (id: number) => {
@@ -47,11 +41,21 @@ function App() {
 			);
 
 			if (response.status >= 200 && response.status < 300) {
-				setBlogs((prevBlogs) => [...prevBlogs, newBlog]);
+				handleFetch();
 			}
 		} catch (err) {
 			console.error("Error posting the data:", err);
 		}
+	};
+
+	const handleFetch = async () => {
+		axios
+			.get("http://localhost:6062/api/blog/get")
+			.then((res) => {
+				console.log(res.data);
+				setBlogs(res.data);
+			})
+			.catch((err) => console.log(`error: ${err}`));
 	};
 
 	return (
