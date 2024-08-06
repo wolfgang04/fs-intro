@@ -12,6 +12,11 @@ const supabaseKey =
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface Blog {
+	blogtitle: string;
+	blogcontent: string;
+}
+
+interface blog {
 	blogid: number;
 	blogtitle: string;
 	blogcontent: string;
@@ -23,7 +28,10 @@ process.on("SIGHUP", () => {
 
 app.get("/api/blog/get", async (req: Request, res: Response) => {
 	try {
-		const { data, error } = await supabase.from("blog").select();
+		const { data, error } = await supabase
+			.from("blog")
+			.select()
+			.order("blogid", { ascending: true });
 		if (error) {
 			throw error;
 		}
@@ -77,6 +85,34 @@ app.post("/api/blog/delete", async (req: Request, res: Response) => {
 		}
 
 		return res.status(201).send("Successfully deleted");
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error deleting data:", error);
+			return res.status(500).send(error.message);
+		} else {
+			console.error("Unknown error occured:", error);
+			return res.status(500).send("An unknown error occured");
+		}
+	}
+});
+
+app.post("/api/blog/edit", async (req: Request, res: Response) => {
+	const blog: blog = req.body;
+
+	try {
+		const { error } = await supabase
+			.from("blog")
+			.update({
+				blogtitle: blog.blogtitle,
+				blogcontent: blog.blogcontent,
+			})
+			.eq("blogid", blog.blogid);
+
+		if (error) {
+			throw error;
+		}
+
+		return res.sendStatus(201);
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error("Error deleting data:", error);

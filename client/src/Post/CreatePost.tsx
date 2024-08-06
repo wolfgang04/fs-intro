@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import ImageIcon from "@mui/icons-material/Image";
-import { blog } from "../App";
+
+interface blog {
+	blogcontent: string;
+	blogtitle: string;
+}
 
 interface Props {
 	onPost: (blog: blog) => void;

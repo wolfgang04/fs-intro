@@ -6,6 +6,7 @@ import { blog } from "../App";
 interface Props {
 	blog: blog;
 	onDelete: (id: number) => void;
+	onEdit: (id: number) => void;
 }
 
 const Post: React.FC<Props> = (props) => {
@@ -42,7 +43,7 @@ const Post: React.FC<Props> = (props) => {
 				onClick={() =>
 					toggled === true
 						? props.onDelete(blogid)
-						: console.log(blogid)
+						: props.onEdit(blogid)
 				}
 			>
 				{toggled === true ? <DeleteIcon /> : <EditIcon />}

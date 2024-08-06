@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import CreatePost from "./Post/CreatePost";
 import Post from "./Post/Post";
 import axios from "axios";
+import EditPost from "./Post/EditPost";
 
 export interface blog {
 	blogid: number;
@@ -11,10 +12,35 @@ export interface blog {
 
 function App() {
 	const [blogs, setBlogs] = useState<blog[]>([]);
+	const [isVisible, setIsVisible] = useState(false);
+	const [post, setPost] = useState<blog>();
 
 	useEffect(() => {
 		handleFetch();
 	}, []);
+
+	const handleEditBlog = async (id: number) => {
+		const idx = blogs.findIndex((blog: blog) => blog.blogid === id);
+		const items = [...blogs];
+		const item = items[idx];
+
+		setPost(item);
+		setIsVisible(true);
+	};
+
+	const handleSaveBlog = async (updatedBlog: {
+		blogtitle: string;
+		blogcontent: string;
+	}) => {
+		const response = await axios.post(
+			"http://localhost:6062/api/blog/edit",
+			updatedBlog
+		);
+
+		if (response.status >= 200 && response.status < 300) {
+			handleFetch();
+		}
+	};
 
 	const handleDeleteItem = async (id: number) => {
 		try {
@@ -33,7 +59,10 @@ function App() {
 		}
 	};
 
-	const handleCreatePost = async (newBlog: blog) => {
+	const handleCreatePost = async (newBlog: {
+		blogcontent: string;
+		blogtitle: string;
+	}) => {
 		try {
 			const response = await axios.post(
 				"http://localhost:6062/api/blog/post",
@@ -60,6 +89,13 @@ function App() {
 
 	return (
 		<>
+			{isVisible && (
+				<EditPost
+					blog={post!}
+					onClose={() => setIsVisible(false)}
+					onSave={handleSaveBlog}
+				/>
+			)}
 			<CreatePost onPost={handleCreatePost} />
 
 			{blogs.map((blog: blog) => (
@@ -67,6 +103,7 @@ function App() {
 					key={blog.blogid}
 					blog={blog}
 					onDelete={handleDeleteItem}
+					onEdit={handleEditBlog}
 				/>
 			))}
 		</>
