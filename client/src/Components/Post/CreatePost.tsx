@@ -14,7 +14,7 @@ const CreatePost: React.FC<Props> = ({ onPost }) => {
 	const [title, setTitle] = useState<string>("");
 	const [content, setContent] = useState<string>("");
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
 		if (title === "" || content === "") {

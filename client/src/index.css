@@ -7,6 +7,7 @@ body {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	/* height: 100vh; */
 }
 
 .col {
@@ -35,6 +36,10 @@ input[type="submit"] {
 	background-color: rgb(141, 138, 138);
 	padding: 5px;
 	border-radius: 8px;
+}
+
+input[type="submit"]:hover {
+	background-color: rgb(122, 121, 121);
 }
 
 .backdrop {

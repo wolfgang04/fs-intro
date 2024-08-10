@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { blog } from "../App";
+import { blog } from "../../Pages/Posts";
 
 interface Props {
 	blog: blog;

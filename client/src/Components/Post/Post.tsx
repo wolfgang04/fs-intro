@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { blog } from "../App";
+import { blog } from "../../Pages/Posts";
 
 interface Props {
 	blog: blog;
