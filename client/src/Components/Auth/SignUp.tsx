@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import FormInput from "./FormInput";
 
 interface pass {
 	password: string;
@@ -7,6 +8,8 @@ interface pass {
 
 const SignUp: React.FC<{ onToggle: () => void }> = (props) => {
 	const [username, setUsername] = useState("");
+	const [email, setEmail] = useState("");
+	const [isMatch, setIsMatch] = useState(true);
 	const [password, setPassword] = useState<pass>({
 		password: "",
 		confirm: "",
@@ -14,6 +17,21 @@ const SignUp: React.FC<{ onToggle: () => void }> = (props) => {
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		setIsMatch(true);
+
+		if (password.password !== password.confirm) {
+			setIsMatch(false);
+			return false;
+		}
+
+		console.log({ username, email, password });
+		setUsername("");
+		setEmail("");
+		setPassword({ password: "", confirm: "" });
+	};
+
+	const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setEmail(e.target.value);
 	};
 
 	const handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,38 +57,38 @@ const SignUp: React.FC<{ onToggle: () => void }> = (props) => {
 			<h1 className="text-center font-bold text-2xl mb-3">Sign Up</h1>
 
 			<div className="gap-5 col mb-5">
-				<div className="col">
-					<label htmlFor="username">Username</label>
-					<input
-						type="text"
-						name="username"
-						className="w-72"
-						value={username}
-						onChange={handleChangeUsername}
-						autoComplete="off"
-					/>
-				</div>
-				<div className="col">
-					<label htmlFor="pass">Password</label>
-					<input
-						type="text"
-						name="pass"
-						className="w-72"
-						value={password.password}
-						onChange={handleChangePassword}
-						autoComplete="off"
-					/>
-				</div>
-				<div className="col">
-					<label htmlFor="confirmPass">Confirm password</label>
-					<input
-						type="text"
-						name="confirmPass"
-						className="w-72"
+				<FormInput
+					change={handleChangeUsername}
+					for="username"
+					label="Username"
+					value={username}
+					type="text"
+				/>
+				<FormInput
+					label="Email"
+					for="email"
+					value={email}
+					change={handleChangeEmail}
+					type="email"
+				/>
+				<FormInput
+					label="Password"
+					for="password"
+					value={password.password}
+					change={handleChangePassword}
+					type="password"
+				/>
+				<div className="">
+					<FormInput
+						label="Confirm Password"
+						for="confirmPass"
 						value={password.confirm}
-						onChange={handleConfirmPassword}
-						autoComplete="off"
+						change={handleConfirmPassword}
+						type="password"
 					/>
+					{!isMatch && (
+						<p className="text-red-500">Password doesn't match</p>
+					)}
 				</div>
 			</div>
 

@@ -1,10 +1,26 @@
-import React from "react";
-import AuthForm from "../Components/Auth/AuthForm";
+import React, { useState } from "react";
+import Login from "../Components/Auth/Login";
+import SignUp from "../Components/Auth/SignUp";
 
-const UserAuth = () => {
+const UserAuth: React.FC<{ onLogIn: () => void }> = (props) => {
+	const [isLogIn, setIsLogIn] = useState<Boolean>(true);
+
+	const handleToggleAuth = () => {
+		setIsLogIn((prevState) => !prevState);
+	};
+
 	return (
 		<div className="h-screen flex items-center justify-center">
-			<AuthForm />
+			<div className="bg-[#D9D9D9] p-8 rounded-lg">
+				{isLogIn == true ? (
+					<Login
+						onToggle={handleToggleAuth}
+						onLogin={() => props.onLogIn()}
+					/>
+				) : (
+					<SignUp onToggle={handleToggleAuth} />
+				)}
+			</div>
 		</div>
 	);
 };

@@ -81,7 +81,6 @@ function Posts() {
 		axios
 			.get("http://localhost:6062/api/blog/get")
 			.then((res) => {
-				console.log(res.data);
 				setBlogs(res.data);
 			})
 			.catch((err) => console.log(`error: ${err}`));

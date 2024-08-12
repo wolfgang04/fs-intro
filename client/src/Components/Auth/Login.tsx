@@ -1,11 +1,17 @@
 import React, { useState } from "react";
+import FormInput from "./FormInput";
 
 interface cred {
 	username: string;
 	password: string;
 }
 
-const Login: React.FC<{ onToggle: () => void }> = (props) => {
+interface Props {
+	onToggle: () => void;
+	onLogin: () => void;
+}
+
+const Login: React.FC<Props> = (props) => {
 	const [credentials, setCredentials] = useState<cred>({
 		username: "",
 		password: "",
@@ -13,6 +19,8 @@ const Login: React.FC<{ onToggle: () => void }> = (props) => {
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+
+		props.onLogin();
 	};
 
 	const handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,28 +42,20 @@ const Login: React.FC<{ onToggle: () => void }> = (props) => {
 			<h1 className="text-center font-bold text-2xl mb-3">Login</h1>
 
 			<div className="gap-5 col mb-5">
-				<div className="col">
-					<label htmlFor="username">Username</label>
-					<input
-						type="text"
-						name="username"
-						className="w-72"
-						value={credentials.username}
-						onChange={handleChangeUsername}
-						autoComplete="off"
-					/>
-				</div>
-				<div className="col">
-					<label htmlFor="password">Password</label>
-					<input
-						type="text"
-						name="password"
-						className="w-72"
-						onChange={handleChangePassword}
-						value={credentials.password}
-						autoComplete="off"
-					/>
-				</div>
+				<FormInput
+					label="Username"
+					for="username"
+					value={credentials.username}
+					type="text"
+					change={handleChangeUsername}
+				/>
+				<FormInput
+					label="Password"
+					for="password"
+					value={credentials.password}
+					type="password"
+					change={handleChangePassword}
+				/>
 			</div>
 
 			<input type="submit" value="Login" />
@@ -64,7 +64,7 @@ const Login: React.FC<{ onToggle: () => void }> = (props) => {
 				className="text-center mt-3 font-bold hover:underline cursor-pointer"
 				onClick={() => props.onToggle()}
 			>
-				Forgot password?
+				Don't have an account?
 			</p>
 		</form>
 	);
