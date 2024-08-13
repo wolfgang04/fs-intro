@@ -2,6 +2,9 @@ import express, { Request, Response } from "express";
 import { createClient } from "@supabase/supabase-js";
 const cors = require("cors");
 
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -25,6 +28,8 @@ interface blog {
 process.on("SIGHUP", () => {
 	process.exit(1);
 });
+
+// FETCH POSTS
 
 app.get("/api/blog/get", async (req: Request, res: Response) => {
 	try {
@@ -50,6 +55,8 @@ app.get("/api/blog/get", async (req: Request, res: Response) => {
 	}
 });
 
+// POST A BLOG
+
 app.post("/api/blog/post", async (req: Request, res: Response) => {
 	const blog: Blog = req.body;
 	console.log(blog);
@@ -70,6 +77,8 @@ app.post("/api/blog/post", async (req: Request, res: Response) => {
 		}
 	}
 });
+
+// DELETE A POST
 
 app.post("/api/blog/delete", async (req: Request, res: Response) => {
 	const blogID = req.body.id;
@@ -96,6 +105,8 @@ app.post("/api/blog/delete", async (req: Request, res: Response) => {
 	}
 });
 
+// EDIT A POST
+
 app.post("/api/blog/edit", async (req: Request, res: Response) => {
 	const blog: blog = req.body;
 
@@ -116,6 +127,85 @@ app.post("/api/blog/edit", async (req: Request, res: Response) => {
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error("Error deleting data:", error);
+			return res.status(500).send(error.message);
+		} else {
+			console.error("Unknown error occured:", error);
+			return res.status(500).send("An unknown error occured");
+		}
+	}
+});
+
+// CREATE AN ACCOUNT
+
+app.post("/api/user/signup", async (req: Request, res: Response) => {
+	const { username, password, email } = req.body;
+
+	try {
+		const hash = await new Promise<String>((resolve, reject) => {
+			bcrypt.hash(
+				password,
+				saltRounds,
+				(err: Error | null, hash: string | undefined) => {
+					if (err) {
+						return reject(err);
+					}
+
+					resolve(hash as string);
+				}
+			);
+		});
+
+		const { error } = await supabase
+			.from("users")
+			.insert({ username, email, password: hash });
+
+		if (error) {
+			throw error;
+		}
+
+		return res.sendStatus(201);
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error posting data:", error);
+			return res.status(500).send(error.message);
+		} else {
+			console.error("Unknown error occured:", error);
+			return res.status(500).send("An unknown error occured");
+		}
+	}
+});
+
+app.get("/api/user/login", async (req: Request, res: Response) => {
+	const { username, password } = req.query;
+
+	try {
+		const { data, error } = await supabase
+			.from("users")
+			.select("password")
+			.eq("username", username);
+
+		if (error) {
+			throw error;
+		}
+
+		const result = await new Promise<boolean>((resolve, reject) => {
+			bcrypt.compare(
+				password,
+				data[0].password,
+				(err: Error | null, isMatch: boolean) => {
+					if (err) {
+						return reject(err);
+					}
+
+					resolve(isMatch as boolean);
+				}
+			);
+		});
+
+		return res.status(201).send(result);
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error getting the password:", error);
 			return res.status(500).send(error.message);
 		} else {
 			console.error("Unknown error occured:", error);

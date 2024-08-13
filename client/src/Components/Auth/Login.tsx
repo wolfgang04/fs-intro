@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import FormInput from "./FormInput";
+import axios from "axios";
 
 interface cred {
 	username: string;
@@ -17,10 +18,19 @@ const Login: React.FC<Props> = (props) => {
 		password: "",
 	});
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		props.onLogin();
+		const response = await axios.get(
+			"http://localhost:6062/api/user/login",
+			{ params: credentials }
+		);
+
+		if (response.status == 201) {
+			console.log(response.data);
+
+			props.onLogin();
+		}
 	};
 
 	const handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {

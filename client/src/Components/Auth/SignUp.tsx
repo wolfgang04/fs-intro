@@ -1,9 +1,16 @@
 import React, { useState } from "react";
 import FormInput from "./FormInput";
+import axios from "axios";
 
 interface pass {
 	password: string;
 	confirm: string;
+}
+
+interface accDetails {
+	username: string;
+	email: string;
+	password: string;
 }
 
 const SignUp: React.FC<{ onToggle: () => void }> = (props) => {
@@ -15,6 +22,17 @@ const SignUp: React.FC<{ onToggle: () => void }> = (props) => {
 		confirm: "",
 	});
 
+	const handleSignUp = async (details: accDetails) => {
+		const response = await axios.post(
+			"http://localhost:6062/api/user/signup",
+			details
+		);
+
+		if (response.status >= 200 && response.status < 300) {
+			console.log("Successfully created account");
+		}
+	};
+
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setIsMatch(true);
@@ -24,7 +42,8 @@ const SignUp: React.FC<{ onToggle: () => void }> = (props) => {
 			return false;
 		}
 
-		console.log({ username, email, password });
+		handleSignUp({ username, email, password: password.password });
+
 		setUsername("");
 		setEmail("");
 		setPassword({ password: "", confirm: "" });
