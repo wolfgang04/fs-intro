@@ -37,6 +37,14 @@ const SignUp: React.FC<{ onToggle: () => void }> = (props) => {
 		e.preventDefault();
 		setIsMatch(true);
 
+		if (
+			username.trim() == "" ||
+			email.trim() == "" ||
+			password.password.trim() == ""
+		) {
+			return false;
+		}
+
 		if (password.password !== password.confirm) {
 			setIsMatch(false);
 			return false;

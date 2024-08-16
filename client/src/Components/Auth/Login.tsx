@@ -21,6 +21,13 @@ const Login: React.FC<Props> = (props) => {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
+		if (
+			credentials.username.trim() === "" ||
+			credentials.password.trim() === ""
+		) {
+			return false;
+		}
+
 		const response = await axios.get(
 			"http://localhost:6062/api/user/login",
 			{ params: credentials }
