@@ -10,7 +10,6 @@
     "kill-port": "^2.0.1"
   },
   "dependencies": {
-    "express-session": "^1.18.0",
     "react-router": "^6.26.0",
     "react-router-dom": "^6.26.0"
   }

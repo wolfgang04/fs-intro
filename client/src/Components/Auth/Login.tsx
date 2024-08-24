@@ -28,13 +28,14 @@ const Login: React.FC<Props> = (props) => {
 			return false;
 		}
 
-		const response = await axios.get(
-			"http://localhost:6062/api/user/login",
-			{ params: credentials }
+		const response = await axios.post(
+			"http://localhost:6062/api/user/auth",
+			credentials
 		);
 
 		if (response.status == 201) {
 			console.log(response.data);
+			console.log(response.data.result);
 
 			props.onLogin();
 		}
