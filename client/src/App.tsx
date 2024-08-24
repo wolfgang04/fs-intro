@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import UserAuth from "./Pages/UserAuth";
 import { Route, Routes } from "react-router";
 import Posts from "./Pages/Posts";
+import Profile from "./Pages/Profile";
 
 export default function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
@@ -22,6 +23,7 @@ export default function App() {
 					)
 				}
 			/>
+			<Route path="/:username" element={<Profile />} />
 		</Routes>
 	);
 }

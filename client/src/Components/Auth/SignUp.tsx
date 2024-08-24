@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import FormInput from "./FormInput";
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 interface pass {
 	password: string;
@@ -21,6 +22,7 @@ const SignUp: React.FC<{ onToggle: () => void }> = (props) => {
 		password: "",
 		confirm: "",
 	});
+	const navigate = useNavigate();
 
 	const handleSignUp = async (details: accDetails) => {
 		const response = await axios.post(
@@ -30,6 +32,7 @@ const SignUp: React.FC<{ onToggle: () => void }> = (props) => {
 
 		if (response.status >= 200 && response.status < 300) {
 			console.log("Successfully created account");
+			navigate(`/${response.data.username}`);
 		}
 	};
 

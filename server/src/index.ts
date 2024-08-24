@@ -39,7 +39,7 @@ app.use(
 		secret: "some_secret",
 		saveUninitialized: false,
 		resave: false,
-		cookie: { maxAge: 30000, signed: true },
+		cookie: { maxAge: 10000000, signed: true },
 	})
 );
 
@@ -179,7 +179,7 @@ app.post("/api/user/signup", async (req: Request, res: Response) => {
 			throw error;
 		}
 
-		return res.sendStatus(201);
+		return res.status(201).send({ username });
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error("Error posting data:", error);
@@ -238,16 +238,16 @@ app.post("/api/user/auth", async (req: Request, res: Response) => {
 				id: data[0].userid,
 				username,
 			};
-		});
 
-		console.log(req.session);
-		console.log(req.sessionID);
-		req.session.visited = true;
+			console.log(req.session);
+			console.log(req.sessionID);
+			req.session.visited = true;
 
-		return res.status(201).send({
-			result,
-			session: req.session,
-			sessionID: req.sessionID,
+			return res.status(201).send({
+				result,
+				session: req.session,
+				sessionID: req.sessionID,
+			});
 		});
 	} catch (error) {
 		if (error instanceof Error) {
@@ -273,20 +273,31 @@ app.get("/api/user/auth/status", (req: Request, res: Response) => {
 		: res.status(401).send({ msg: "NOT AUTHENTICATED" });
 });
 
-app.post("/api/cart", (req: Request, res: Response) => {
-	if (!req.session.user) return res.sendStatus(401);
-
-	const { body } = req;
-	const { cart } = req.session;
-	if (cart) {
-		cart.push(body);
-	} else {
-		req.session.cart = [body];
+app.get("/profile", async (req: Request, res: Response) => {
+	if (!req.session || !req.session.user || !req.session.user.id) {
+		return res.status(401).send({ msg: "unauthorized" });
 	}
 
-	console.log(req.session.cart);
+	try {
+		const { data, error } = await supabase
+			.from("users")
+			.select("username, email, created_at")
+			.eq("userid", req.session.user.id);
 
-	return res.status(201).send(body);
+		if (error) {
+			throw error;
+		}
+
+		res.status(200).send(data[0]);
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error fetching user info:", error);
+			return res.status(500).send(error.message);
+		} else {
+			console.error("Unknown error occured:", error);
+			return res.status(500).send("An unknown error occured");
+		}
+	}
 });
 
 const port = 6062;
