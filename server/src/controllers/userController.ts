@@ -79,25 +79,16 @@ export const login = async (req: Request, res: Response) => {
 			return res.status(401).send({ result, msg: "BAD CREDENTIALS" });
 		}
 
-		req.session.regenerate((err: Error) => {
-			if (err) {
-				return res.status(400).send({ msg: "unable to login" });
-			}
+		try {
+			await regenerateSession(req, res, username);
+		} catch (error) {
+			res.status(500).send({ msg: "An error occured", error });
+		}
 
-			req.session.user = {
-				id: data[0].userid,
-				username,
-			};
-
-			console.log(req.session);
-			console.log(req.sessionID);
-			req.session.visited = true;
-
-			return res.status(201).send({
-				result,
-				session: req.session,
-				sessionID: req.sessionID,
-			});
+		return res.status(201).send({
+			result,
+			session: req.session,
+			sessionID: req.sessionID,
 		});
 	} catch (error) {
 		if (error instanceof Error) {
