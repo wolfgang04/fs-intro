@@ -37,3 +37,48 @@ export const signup = async (request: Request, response: Response) => {
 		}
 	}
 };
+
+export const login = async (request: Request, response: Response) => {
+	const { username, password } = request.body;
+
+	try {
+		const { data, error } = await supabase
+			.from("user")
+			.select()
+			.eq("username", username);
+
+		if (error) throw error;
+
+		if (data.length == 0) {
+			console.error("No accounts found with username: ", username);
+			return response
+				.status(401)
+				.send({ msg: `No accounts found with username: ${username}` });
+		}
+
+		const result = await new Promise<Boolean>((resolve, reject) => {
+			bcrypt.compare(
+				password,
+				data[0].password,
+				(err: Error | undefined, result: Boolean) => {
+					if (err) reject(err);
+					else resolve(result as Boolean);
+				}
+			);
+		});
+
+		if (result) {
+			return response.status(200).send("Successfully logged in");
+		} else {
+			return response.status(401).send("Invalid credentials");
+		}
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error logging in:", error);
+			return response.status(500).send(error.message);
+		} else {
+			console.error("Unknown error occured:", error);
+			return response.status(500).send("An unknown error occured");
+		}
+	}
+};

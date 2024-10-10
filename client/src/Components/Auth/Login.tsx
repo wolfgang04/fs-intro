@@ -33,9 +33,8 @@ const Login: React.FC<Props> = (props) => {
 			credentials
 		);
 
-		if (response.status == 201) {
-			console.log(response.data);
-			console.log(response.data.result);
+		if (response.status == 200) {
+			console.log(response.data, response.data.result);
 
 			props.onLogin();
 		}
