@@ -13,12 +13,14 @@ interface Props {
 }
 
 const Login: React.FC<Props> = (props) => {
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [credentials, setCredentials] = useState<cred>({
 		username: "",
 		password: "",
 	});
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		setIsLoading(true);
 		e.preventDefault();
 
 		if (
@@ -33,6 +35,7 @@ const Login: React.FC<Props> = (props) => {
 			credentials
 		);
 
+		setIsLoading(false);
 		if (response.status == 200) {
 			console.log(response.data, response.data.result);
 
@@ -55,35 +58,44 @@ const Login: React.FC<Props> = (props) => {
 	};
 
 	return (
-		<form className="" onSubmit={handleSubmit}>
-			<h1 className="text-center font-bold text-2xl mb-3">Login</h1>
-
-			<div className="gap-5 col mb-5">
-				<FormInput
-					label="Username"
-					for="username"
-					value={credentials.username}
-					type="text"
-					change={handleChangeUsername}
+		<>
+			{isLoading && (
+				<span
+					className="loading loading-spinner loading-lg absolute left-1/2 top-1/2 
+			-translate-x-1/2 -translate-y-1/2"
 				/>
-				<FormInput
-					label="Password"
-					for="password"
-					value={credentials.password}
-					type="password"
-					change={handleChangePassword}
-				/>
-			</div>
+			)}
 
-			<input type="submit" value="Login" />
+			<form className="" onSubmit={handleSubmit}>
+				<h1 className="text-center font-bold text-2xl mb-3">Login</h1>
 
-			<p
-				className="text-center mt-3 font-bold hover:underline cursor-pointer"
-				onClick={() => props.onToggle()}
-			>
-				Don't have an account?
-			</p>
-		</form>
+				<div className="gap-5 col mb-5">
+					<FormInput
+						label="Username"
+						for="username"
+						value={credentials.username}
+						type="text"
+						change={handleChangeUsername}
+					/>
+					<FormInput
+						label="Password"
+						for="password"
+						value={credentials.password}
+						type="password"
+						change={handleChangePassword}
+					/>
+				</div>
+
+				<input type="submit" value="Login" />
+
+				<p
+					className="text-center mt-3 font-bold hover:underline cursor-pointer"
+					onClick={() => props.onToggle()}
+				>
+					Don't have an account?
+				</p>
+			</form>
+		</>
 	);
 };
 
