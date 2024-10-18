@@ -3,7 +3,9 @@ import cors from "cors";
 import session from "express-session";
 import { Redis } from "ioredis";
 import RedisStore from "connect-redis";
-import userRoutes from "./routes/userRoutes";
+import userRoutes from "./routes/user.routes";
+import blogRoutes from "./routes/blog.routes";
+import cookieParser from "cookie-parser";
 
 const app: express.Application = express();
 
@@ -22,6 +24,7 @@ redisClient.on("error", (err) => {
 });
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(
 	cors({
 		origin: "http://localhost:5173",
@@ -31,20 +34,24 @@ app.use(
 
 app.use(
 	session({
-		secret: process.env.SECRET || "SECRET",
-		name: "andrew",
-		store: new RedisStore({ client: redisClient }),
-		resave: false,
-		saveUninitialized: false,
+		name: "qid",
+		store: new RedisStore({
+			client: redisClient,
+			disableTouch: true,
+		}),
 		cookie: {
-			maxAge: 1000 * 60 * 24,
+			maxAge: 1000 * 60 * 60 * 24,
 			httpOnly: true,
 			secure: true,
 			sameSite: "none",
 		},
+		saveUninitialized: false,
+		secret: process.env.SECRET || "SECRET",
+		resave: false,
 	})
 );
 
 app.use("/api/user", userRoutes);
+app.use("/api/blog", blogRoutes);
 
 export default app;
