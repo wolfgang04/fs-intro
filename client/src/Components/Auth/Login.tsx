@@ -32,12 +32,13 @@ const Login: React.FC<Props> = (props) => {
 
 		const response = await axios.post(
 			"http://localhost:6062/api/user/auth",
-			credentials
+			credentials,
+			{ withCredentials: true }
 		);
 
 		setIsLoading(false);
 		if (response.status == 200) {
-			console.log(response.data, response.data.result);
+			console.log(response.data);
 
 			props.onLogin();
 		}

@@ -1,6 +1,6 @@
 export interface Blog {
-	blogtitle: string;
-	blogcontent: string;
+	blog_title: string;
+	blog_content: string;
 }
 
 export interface blog {

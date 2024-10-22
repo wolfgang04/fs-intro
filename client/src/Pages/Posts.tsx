@@ -66,7 +66,8 @@ function Posts() {
 		try {
 			const response = await axios.post(
 				"http://localhost:6062/api/blog/post",
-				newBlog
+				newBlog,
+				{ withCredentials: true }
 			);
 
 			if (response.status >= 200 && response.status < 300) {
@@ -95,6 +96,7 @@ function Posts() {
 					onSave={handleSaveBlog}
 				/>
 			)}
+			{/* <button onClick={() => }>profile</button> */}
 			<CreatePost onPost={handleCreatePost} />
 
 			{blogs.map((blog: blog) => (

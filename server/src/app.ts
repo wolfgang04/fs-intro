@@ -3,7 +3,8 @@ import cors from "cors";
 import session from "express-session";
 import { Redis } from "ioredis";
 import RedisStore from "connect-redis";
-import userRoutes from "./routes/userRoutes";
+import userRoutes from "./routes/user.routes";
+import blogRoutes from "./routes/blog.routes";
 
 const app: express.Application = express();
 
@@ -31,20 +32,24 @@ app.use(
 
 app.use(
 	session({
-		secret: process.env.SECRET || "SECRET",
-		name: "andrew",
-		store: new RedisStore({ client: redisClient }),
-		resave: false,
-		saveUninitialized: false,
+		name: "qid",
+		store: new RedisStore({
+			client: redisClient,
+			disableTouch: true,
+		}),
 		cookie: {
-			maxAge: 1000 * 60 * 24,
+			maxAge: 1000 * 60 * 60 * 24,
 			httpOnly: true,
-			secure: true,
-			sameSite: "none",
+			secure: false,
+			sameSite: "lax",
 		},
+		saveUninitialized: false,
+		secret: process.env.SECRET || "SECRET",
+		resave: false,
 	})
 );
 
 app.use("/api/user", userRoutes);
+app.use("/api/blog", blogRoutes);
 
 export default app;

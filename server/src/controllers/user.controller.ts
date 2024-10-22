@@ -1,6 +1,12 @@
-import { Request, Response } from "express";
+import { request, Request, Response } from "express";
 import { supabase } from "../utils/supabaseClient";
 import bcrypt from "bcrypt";
+
+declare module "express-session" {
+	interface SessionData {
+		userID: string;
+	}
+}
 
 export const signup = async (request: Request, response: Response) => {
 	const { username, password, email } = request.body;
@@ -50,6 +56,7 @@ export const login = async (request: Request, response: Response) => {
 		if (error) throw error;
 
 		if (data.length == 0) {
+			request.session.destroy;
 			console.error("No accounts found with username: ", username);
 			return response
 				.status(401)
@@ -68,8 +75,11 @@ export const login = async (request: Request, response: Response) => {
 		});
 
 		if (result) {
-			return response.status(200).send("Successfully logged in");
+			request.session.userID = username;
+
+			return response.status(200).send(request.session);
 		} else {
+			request.session.destroy;
 			return response.status(401).send("Invalid credentials");
 		}
 	} catch (error) {
@@ -81,4 +91,18 @@ export const login = async (request: Request, response: Response) => {
 			return response.status(500).send("An unknown error occured");
 		}
 	}
+};
+
+export const status = async (request: Request, response: Response) => {
+	return !request.session.userID
+		? response.sendStatus(401)
+		: response.status(200).send(request.session);
+};
+
+export const logout = async (request: Request) => {
+	request.session.destroy((err) => {
+		if (err) {
+			console.error("Failed to destroy session:", err);
+		}
+	});
 };
