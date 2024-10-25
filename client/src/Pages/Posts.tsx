@@ -4,6 +4,7 @@ import Post from "../Components/Post/Post";
 import axios from "axios";
 import EditPost from "../Components/Post/EditPost";
 import { blog } from "../models/blog.model";
+import Header from "../Components/Header/Header";
 
 function Posts() {
 	const [blogs, setBlogs] = useState<blog[]>([]);
@@ -92,6 +93,8 @@ function Posts() {
 
 	return (
 		<>
+			<Header />
+
 			{isVisible && (
 				<EditPost
 					blog={post}

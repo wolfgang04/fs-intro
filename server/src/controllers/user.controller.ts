@@ -1,4 +1,4 @@
-import { request, Request, Response } from "express";
+import { request, Request, response, Response } from "express";
 import { supabase } from "../utils/supabaseClient";
 import bcrypt from "bcrypt";
 
@@ -99,10 +99,11 @@ export const status = async (request: Request, response: Response) => {
 		: response.status(200).send(request.session);
 };
 
-export const logout = async (request: Request) => {
+export const logout = async (request: Request, response: Response) => {
 	request.session.destroy((err) => {
 		if (err) {
-			console.error("Failed to destroy session:", err);
+			return response.status(500).send("Unable to log out");
 		}
+		return response.sendStatus(200);
 	});
 };

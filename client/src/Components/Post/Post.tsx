@@ -13,6 +13,8 @@ const Post: React.FC<Props> = (props) => {
 	const [toggled, setToggled] = useState(false);
 	const { id, blog_title, blog_content, username } = props.blog;
 
+	const fetchUser = () => {};
+
 	const handleKeyDown = (e: KeyboardEvent) => {
 		if (e.key === "Shift") {
 			setToggled(true);
@@ -37,7 +39,15 @@ const Post: React.FC<Props> = (props) => {
 
 	return (
 		<div className="bg-[#D9D9D9] p-5 mb-5 rounded-lg relative max-w-[550px]">
-			<h1 className="font-bold text-2xl mb-3">{blog_title}</h1>
+			<div>
+				<p
+					className="hover:underline cursor-pointer"
+					onClick={() => fetchUser()}
+				>
+					{username}
+				</p>
+				<h1 className="font-bold text-3xl mb-3">{blog_title}</h1>
+			</div>
 			<div
 				className={`cursor-pointer hover:bg-[#b8b8b8] rounded-full h-10 w-10 flex justify-center items-center absolute top-0 right-0 `}
 				onClick={() =>
