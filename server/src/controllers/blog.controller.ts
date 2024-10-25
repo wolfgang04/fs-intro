@@ -69,3 +69,23 @@ export const editBlog = async (request: Request, response: Response) => {
 		}
 	}
 };
+
+export const deleteBlog = async (request: Request, response: Response) => {
+	const { id } = request.body;
+
+	try {
+		const { error } = await supabase.from("blog").delete().eq("id", id);
+
+		if (error) throw error;
+
+		return response.status(200).send("Post successfully deleted");
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error deleting post with id:", id);
+			return response.status(500).send(`Error deleting post: ${error}`);
+		} else {
+			console.error("Unknown error occured:", error);
+			return response.status(500).send(`Error deleting post: ${error}`);
+		}
+	}
+};

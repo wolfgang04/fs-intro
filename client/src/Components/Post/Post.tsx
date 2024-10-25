@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { blog } from "../../models/blog.model";
-import Cookies from "js-cookie";
 
 interface Props {
 	blog: blog;

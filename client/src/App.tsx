@@ -7,28 +7,24 @@ import axios from "axios";
 
 export default function App() {
 	const [isLoading, setIsLoading] = useState<Boolean>(false);
-	const [isLoggedIn, setIsLoggedIn] = useState<Boolean | undefined>(
-		undefined
-	);
+	const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
 
-	// useEffect(() => {
-	// 	const handleFetchStatus = async () => {
-	// 		try {
-	// 			const response = await axios.get(
-	// 				"http://localhost:6062/api/user/auth/status",
-	// 				{ withCredentials: true }
-	// 			);
+	useEffect(() => {
+		fetchStatus();
+	}, []);
 
-	// 			if (response.status == 200 && response.data.authenticated) {
-	// 				setIsLoggedIn(true);
-	// 			}
-	// 		} catch (error) {
-	// 			setIsLoggedIn(false);
-	// 		}
-	// 	};
+	const fetchStatus = async () => {
+		try {
+			const res = await axios.get(
+				"http://localhost:6062/api/user/auth/status",
+				{ withCredentials: true }
+			);
 
-	// 	handleFetchStatus();
-	// }, []);
+			if (res.status == 200) {
+				setIsLoggedIn(true);
+			}
+		} catch (error) {}
+	};
 
 	const handleLogin = () => {
 		setIsLoggedIn(true);
