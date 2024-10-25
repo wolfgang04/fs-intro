@@ -3,34 +3,35 @@ import CreatePost from "../Components/Post/CreatePost";
 import Post from "../Components/Post/Post";
 import axios from "axios";
 import EditPost from "../Components/Post/EditPost";
-
-export interface blog {
-	blogid: number;
-	blogtitle: string;
-	blogcontent: string;
-}
+import { blog } from "../models/blog.model";
 
 function Posts() {
 	const [blogs, setBlogs] = useState<blog[]>([]);
 	const [isVisible, setIsVisible] = useState(false);
-	const [post, setPost] = useState<blog>();
+	const [post, setPost] = useState<blog>({
+		id: -1,
+		blog_content: "",
+		blog_title: "",
+		username: "",
+	});
 
 	useEffect(() => {
 		handleFetch();
 	}, []);
 
 	const handleEditBlog = async (id: number) => {
-		const idx = blogs.findIndex((blog: blog) => blog.blogid === id);
-		const items = [...blogs];
-		const item = items[idx];
+		const idx = blogs.findIndex((blog) => blog.id == id);
+		const posts = [...blogs];
+		const post = posts[idx];
 
-		setPost(item);
+		setPost(post);
 		setIsVisible(true);
 	};
 
 	const handleSaveBlog = async (updatedBlog: {
-		blogtitle: string;
-		blogcontent: string;
+		id: number;
+		blog_title: string;
+		blog_content: string;
 	}) => {
 		const response = await axios.post(
 			"http://localhost:6062/api/blog/edit",
@@ -51,7 +52,7 @@ function Posts() {
 
 			if (response.status >= 200 && response.status < 300) {
 				setBlogs((prevBlogs: blog[]) => {
-					return prevBlogs.filter((blog: blog) => blog.blogid !== id);
+					return prevBlogs.filter((blog: blog) => blog.id !== id);
 				});
 			}
 		} catch (error) {
@@ -80,7 +81,9 @@ function Posts() {
 
 	const handleFetch = async () => {
 		axios
-			.get("http://localhost:6062/api/blog/get")
+			.get("http://localhost:6062/api/blog/get", {
+				withCredentials: true,
+			})
 			.then((res) => {
 				setBlogs(res.data);
 			})
@@ -91,17 +94,17 @@ function Posts() {
 		<>
 			{isVisible && (
 				<EditPost
-					blog={post!}
+					blog={post}
 					onClose={() => setIsVisible(false)}
 					onSave={handleSaveBlog}
 				/>
 			)}
-			{/* <button onClick={() => }>profile</button> */}
+
 			<CreatePost onPost={handleCreatePost} />
 
-			{blogs.map((blog: blog) => (
+			{blogs.map((blog: blog, idx: number) => (
 				<Post
-					key={blog.blogid}
+					key={blog.username + `${idx}`}
 					blog={blog}
 					onDelete={handleDeleteItem}
 					onEdit={handleEditBlog}

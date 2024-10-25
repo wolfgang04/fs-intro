@@ -1,23 +1,33 @@
-import React, { useState } from "react";
-import { blog } from "../../Pages/Posts";
+import React, { useEffect, useState } from "react";
+import { blog } from "../../models/blog.model";
 
 interface Props {
 	blog: blog;
 	onClose: () => void;
-	onSave: (blog: { blogtitle: string; blogcontent: string }) => void;
+	onSave: (blog: {
+		id: number;
+		blog_title: string;
+		blog_content: string;
+	}) => void;
 }
 
 const EditPost: React.FC<Props> = ({ blog, onClose, onSave }) => {
-	const [title, setTitle] = useState(blog.blogtitle);
-	const [content, setContent] = useState(blog.blogcontent);
+	const [title, setTitle] = useState(blog.blog_title);
+	const [content, setContent] = useState(blog.blog_content);
+	console.log(blog.blog_title, blog.blog_content);
+
+	useEffect(() => {
+		setTitle(blog.blog_title);
+		setContent(blog.blog_content);
+	}, [blog]);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
 		const updatedBlog = {
-			blogid: blog.blogid,
-			blogtitle: title,
-			blogcontent: content,
+			id: blog.id,
+			blog_title: title,
+			blog_content: content,
 		};
 		onSave(updatedBlog);
 		onClose();
@@ -35,7 +45,7 @@ const EditPost: React.FC<Props> = ({ blog, onClose, onSave }) => {
 		<>
 			<div className="backdrop" onClick={() => onClose()} />
 
-			<div className="modal w-[550px] bg-[#D9D9D9] my-10 p-5 rounded-lg">
+			<div className="custom-modal w-[550px] bg-[#D9D9D9] my-10 p-5 rounded-lg">
 				<form action="" onSubmit={handleSubmit}>
 					<div className="col">
 						<label htmlFor="title">Blog Title</label>
@@ -57,11 +67,7 @@ const EditPost: React.FC<Props> = ({ blog, onClose, onSave }) => {
 						/>
 					</div>
 
-					<input
-						type="submit"
-						value="Post"
-						className="hover:bg-[#6E6C6C] mt-5"
-					/>
+					<input type="submit" value="Edit" className="mt-5" />
 				</form>
 			</div>
 		</>

@@ -16,13 +16,22 @@ body {
 	gap: 5px;
 }
 
+h1,
+label,
+p {
+	color: rgb(24, 22, 53);
+}
+
 label {
 	font-size: 21px;
 }
 
 input {
 	padding: 5px;
+	padding-left: 10px;
 	border-radius: 8px;
+	background-color: rgb(163, 163, 163);
+	color: black;
 }
 
 input:focus {
@@ -33,29 +42,31 @@ input[type="submit"] {
 	cursor: pointer;
 	display: block;
 	width: 100%;
-	background-color: rgb(141, 138, 138);
+	background-color: rgb(65, 106, 180);
+	color: rgb(255, 255, 255);
+	font-weight: bold;
 	padding: 5px;
 	border-radius: 8px;
 }
 
 input[type="submit"]:hover {
-	background-color: rgb(122, 121, 121);
+	background-color: rgb(35, 91, 194);
 }
 
 .backdrop {
+	position: fixed;
+	z-index: 5;
 	background-color: black;
-	opacity: 50%;
+	opacity: 0.5;
 	height: 100vh;
 	width: 100vw;
-	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 5;
 }
 
-.modal {
-	z-index: 50;
+.custom-modal {
 	position: fixed;
+	z-index: 100;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);

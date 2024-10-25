@@ -1,11 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Login from "../Components/Auth/Login";
 import SignUp from "../Components/Auth/SignUp";
+import axios from "axios";
 
 const UserAuth: React.FC<{ onLogIn: () => void }> = (props) => {
 	const [isLogIn, setIsLogIn] = useState<Boolean>(true);
 
-	const handleToggleAuth = () => {
+	useEffect(() => {
+		fetchStatus();
+	}, []);
+
+	const fetchStatus = async () => {
+		try {
+			const res = await axios.get(
+				"http://localhost:6062/api/user/auth/status"
+			);
+
+			console.log(res);
+		} catch (error) {}
+	};
+
+	const handleToggleAuth = async () => {
 		setIsLogIn((prevState) => !prevState);
 	};
 

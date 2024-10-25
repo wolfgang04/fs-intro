@@ -30,18 +30,19 @@ const Login: React.FC<Props> = (props) => {
 			return false;
 		}
 
-		const response = await axios.post(
-			"http://localhost:6062/api/user/auth",
-			credentials,
-			{ withCredentials: true }
-		);
+		try {
+			const response = await axios.post(
+				"http://localhost:6062/api/user/auth",
+				credentials,
+				{ withCredentials: true }
+			);
+
+			if (response.status == 200) {
+				props.onLogin();
+			}
+		} catch (err) {}
 
 		setIsLoading(false);
-		if (response.status == 200) {
-			console.log(response.data);
-
-			props.onLogin();
-		}
 	};
 
 	const handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {

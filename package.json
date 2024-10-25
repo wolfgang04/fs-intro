@@ -2,7 +2,7 @@
   "name": "fs-intro",
   "version": "1.0.0",
   "scripts": {
-    "prestart": "kill-port 3000",
+    "prestart": "kill-port 6062",
     "start": "concurrently \"npm start --prefix client\" \"npm start --prefix server\""
   },
   "devDependencies": {
