@@ -1,27 +1,42 @@
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 const Header = () => {
-	const logout = async () => {
-		const res = await axios.get("http://localhost:6062/api/user/logout", {
-			withCredentials: true,
-		});
+  const navigate = useNavigate();
 
-		if (res.status == 200) {
-			window.location.reload();
-		}
-	};
+  const logout = async () => {
+    const res = await axios.get("http://localhost:6062/api/user/logout", {
+      withCredentials: true,
+    });
 
-	return (
-		<div className="bg-[#D9D9D9] flex justify-evenly">
-			<p className="hover:underline cursor-pointer">Profile</p>
-			<p
-				className="hover:underline cursor-pointer"
-				onClick={() => logout()}
-			>
-				Logout
-			</p>
-		</div>
-	);
+    if (res.status == 200) {
+      window.location.reload();
+    }
+  };
+
+  const getUser = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:6062/api/user/auth/status",
+        { withCredentials: true },
+      );
+
+      if (res.status == 200) {
+        navigate(`/${res.data}`);
+      }
+    } catch (error) {}
+  };
+
+  return (
+    <div className="flex justify-evenly bg-[#D9D9D9] text-black">
+      <p className="cursor-pointer hover:underline" onClick={() => getUser()}>
+        Profile
+      </p>
+      <p className="cursor-pointer hover:underline" onClick={() => logout()}>
+        Logout
+      </p>
+    </div>
+  );
 };
 
 export default Header;

@@ -16,9 +16,9 @@ body {
 	gap: 5px;
 }
 
-h1,
-label,
-p {
+form h1,
+form label,
+form p {
 	color: rgb(24, 22, 53);
 }
 

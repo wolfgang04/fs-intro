@@ -31,8 +31,10 @@ export const signup = async (request: Request, response: Response) => {
 			.select();
 
 		if (error) throw error;
+		request.session.userID = username;
 
-		console.log(data);
+		console.log(data, request.session.userID);
+		return response.status(200).send(request.session);
 	} catch (err) {
 		if (err instanceof Error) {
 			console.error("Error creating user:", err);
@@ -96,7 +98,7 @@ export const login = async (request: Request, response: Response) => {
 export const status = async (request: Request, response: Response) => {
 	return !request.session.userID
 		? response.sendStatus(401)
-		: response.status(200).send(request.session);
+		: response.status(200).send(request.session.userID);
 };
 
 export const logout = async (request: Request, response: Response) => {
@@ -106,4 +108,50 @@ export const logout = async (request: Request, response: Response) => {
 		}
 		return response.sendStatus(200);
 	});
+};
+
+export const profile = async (request: Request, response: Response) => {
+	const { username } = request.body;
+
+	try {
+		const { data: userData, error: userError } = await supabase
+			.from("user")
+			.select(
+				"username, email, created_at, updated_at, first_name, middle_name, last_name, profile_picture"
+			)
+			.eq("username", username);
+
+		if (userError) throw userError;
+
+		const { count: followerCount, error: followerError } = await supabase
+			.from("following")
+			.select("*", { count: "exact" })
+			.eq("followed", username);
+		const { count: followingCount, error: followingError } = await supabase
+			.from("following")
+			.select("*", { count: "exact" })
+			.eq("follower", username);
+
+		if (followerError || followingError) {
+			throw followerError || followingError;
+		}
+
+		const result = {
+			user: userData,
+			counts: {
+				followerCount: followerCount,
+				followingCount: followingCount,
+			},
+		};
+
+		return response.status(200).send(result);
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error fetching user:", error);
+			return response.status(500).send(error.message);
+		} else {
+			console.error("Unknown error occured:", error);
+			return response.status(500).send("An unknown error occured");
+		}
+	}
 };
