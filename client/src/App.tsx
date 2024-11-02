@@ -6,43 +6,46 @@ import Profile from "./Pages/Profile";
 import axios from "axios";
 
 export default function App() {
-	const [isLoading, setIsLoading] = useState<Boolean>(false);
-	const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
+  const [isLoading, setIsLoading] = useState<Boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
+  const [userID, setUserID] = useState<string>("");
+  let res: any;
 
-	useEffect(() => {
-		fetchStatus();
-	}, []);
+  useEffect(() => {
+    fetchStatus();
+  }, []);
 
-	const fetchStatus = async () => {
-		try {
-			const res = await axios.get(
-				"http://localhost:6062/api/user/auth/status",
-				{ withCredentials: true }
-			);
+  const fetchStatus = async () => {
+    try {
+      res = await axios.get("http://localhost:6062/api/user/auth/status", {
+        withCredentials: true,
+      });
 
-			if (res.status == 200) {
-				setIsLoggedIn(true);
-			}
-		} catch (error) {}
-	};
+      if (res.status == 200) {
+        setUserID(res.data);
+        setIsLoggedIn(true);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        setUserID("");
+        setIsLoggedIn(false);
+      }
+    }
+  };
 
-	const handleLogin = () => {
-		setIsLoggedIn(true);
-	};
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
 
-	return (
-		<Routes>
-			<Route
-				path="/"
-				element={
-					isLoggedIn == true ? (
-						<Posts />
-					) : (
-						<UserAuth onLogIn={handleLogin} />
-					)
-				}
-			/>
-			<Route path="/:username" element={<Profile />} />
-		</Routes>
-	);
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={
+          isLoggedIn == true ? <Posts /> : <UserAuth onLogIn={handleLogin} />
+        }
+      />
+      <Route path="/:username" element={<Profile loggedInUser={userID} />} />
+    </Routes>
+  );
 }

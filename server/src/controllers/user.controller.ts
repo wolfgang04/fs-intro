@@ -97,7 +97,7 @@ export const login = async (request: Request, response: Response) => {
 
 export const status = async (request: Request, response: Response) => {
 	return !request.session.userID
-		? response.sendStatus(401)
+		? response.status(401).send({ userID: "" })
 		: response.status(200).send(request.session.userID);
 };
 

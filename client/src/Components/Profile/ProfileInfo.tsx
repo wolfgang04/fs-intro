@@ -4,9 +4,10 @@ import { user, date_options } from "../../models/user.model";
 interface Props {
   user: user;
   count: { followingCount: number; followerCount: number };
+  isOwnProfile: boolean;
 }
 
-const ProfileInfo: React.FC<Props> = ({ user, count }) => {
+const ProfileInfo: React.FC<Props> = ({ user, count, isOwnProfile }) => {
   const { username, email, created_at, updated_at, profile_picture } = user;
   const first_name = user.first_name ?? "John";
   const middle_name = user.middle_name ?? "Jane";
@@ -35,8 +36,12 @@ const ProfileInfo: React.FC<Props> = ({ user, count }) => {
           </div>
 
           <div className="flex gap-10 text-[#D9D9D9]">
-            <p className="cursor-pointer">{count.followerCount} followers</p>
-            <p className="cursor-pointer">{count.followingCount} following</p>
+            <p className="cursor-pointer hover:underline">
+              {count.followerCount} followers
+            </p>
+            <p className="cursor-pointer hover:underline">
+              {count.followingCount} following
+            </p>
           </div>
         </div>
       </div>
